@@ -78,10 +78,11 @@ public abstract class Element extends Svg {
      * @return Starting part of the style string.
      */
     protected String styleStart() {
+        String s = tag + " id=\"" + id + "\" cursor=\"pointer\" ";
         if(styles.isEmpty()) {
-            return "<" + tag + " id=\"" + id + "\" ";
+            return "<" + s;
         }
-        return "<g><defs><style>" + styles.build(id) + "</style></defs>\n" + tag + " id\"" + id + "\" ";
+        return "<g><defs><style>" + styles.build(id) + "</style></defs>\n" + s;
     }
 
     /**
