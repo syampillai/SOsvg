@@ -1,7 +1,5 @@
 package com.storedobject.svg;
 
-import java.util.stream.Collectors;
-
 /**
  * Represents an SVG polygon.
  *
