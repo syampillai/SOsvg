@@ -79,7 +79,7 @@ public abstract class Element extends Svg {
      */
     protected String styleStart() {
         if(styles.isEmpty()) {
-            return "";
+            return "<" + tag + " id=\"" + id + "\" ";
         }
         return "<g><defs><style>" + styles.build(id) + "</style></defs>\n" + tag + " id\"" + id + "\" ";
     }

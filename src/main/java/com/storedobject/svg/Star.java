@@ -13,6 +13,17 @@ public class Star extends Polygon {
     /**
      * Constructor.
      *
+     * @param innerRadius Inner radius.
+     * @param outerRadius Outer radius.
+     * @param points Number of points.
+     */
+    public Star(double innerRadius, double outerRadius, int points) {
+        this(0, 0, innerRadius, outerRadius, points);
+    }
+
+    /**
+     * Constructor.
+     *
      * @param center Center point.
      * @param innerRadius Inner radius.
      * @param outerRadius Outer radius.
@@ -34,8 +45,8 @@ public class Star extends Polygon {
     public Star(double cx, double cy, double innerRadius, double outerRadius, int points) {
         this.cx = cx;
         this.cy = cy;
-        this.innerRadius = innerRadius;
-        this.outerRadius = outerRadius;
+        this.innerRadius = Math.min(innerRadius, outerRadius);
+        this.outerRadius = Math.max(innerRadius, outerRadius);
         this.pointsCount = points;
     }
 
@@ -43,7 +54,7 @@ public class Star extends Polygon {
      * Constructor.
      */
     public Star() {
-        this(0, 0, 0, 0, 5);
+        this(0, 0, 10, 20, 5);
     }
 
     /**
