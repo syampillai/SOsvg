@@ -35,6 +35,7 @@ public class Test {
         c.addValue("Category D", 17);
         c.addValue("Category E", 30);
         canvas.add(c);
+
         System.err.println(c.getSvg());
         //System.err.println("--- CANVAS ---");
         //System.err.println(canvas.getSvg());

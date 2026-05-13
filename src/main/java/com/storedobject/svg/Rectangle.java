@@ -29,6 +29,7 @@ public class Rectangle extends Element {
      * @param h Height.
      */
     public Rectangle(double x, double y, double w, double h) {
+        super("rect");
         this.x = x;
         this.y = y;
         this.w = w;
@@ -247,7 +248,7 @@ public class Rectangle extends Element {
         if(built) {
             return;
         }
-        svg = styles("rect") + "<rect x=\"" + x + "\" y=\"" + y + "\" width=\"" + w + "\" height=\"" + h + "\"/>";
+        svg = styleStart() + "x=\"" + x + "\" y=\"" + y + "\" width=\"" + w + "\" height=\"" + h + "\"/>" + styleEnd();
         this.width = x + w;
         this.height = y + h;
         built = true;

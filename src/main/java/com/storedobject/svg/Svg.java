@@ -4,7 +4,9 @@ import com.storedobject.common.StringUtility;
 import java.util.function.DoubleSupplier;
 
 /**
- * Base class for all SVG objects.
+ * Base class for all SVG objects. This represents a single visual unit or part of an SVG document. It has got its own
+ * size and origin, and can be independently translated and scaled. Many such SVG objects can be combined to form
+ * a larger visual composition.
  *
  * @author Syam
  */
@@ -19,13 +21,17 @@ public abstract class Svg {
 
     /**
      * SVG content. This is typically set by the build() method. It should not contain the top level svg tag.
+     * <p>Note: It can contain one or more svg tags clubbed together to form a logical unit or visual part. If the
+     * such a unit should be treated as a single entity for positioning and scaling purposes, it may have to be
+     * bracketed by a "<code>g</code>" tag.</p>
      */
     protected String svg;
 
     /**
-     * Current x and y coordinates. These could be set to any value so that the final SVG output will be translated.
+     * Current x and y coordinates of this svg unit. These could be set to any value so that the final SVG output
+     * will be translated to this location.
      */
-    protected double x, y;
+    protected double x = 0, y = 0;
 
     /**
      * Default size of the SVG. This could be set to any value so that the final SVG output will compute the view box

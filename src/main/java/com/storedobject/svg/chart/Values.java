@@ -1,10 +1,14 @@
 package com.storedobject.svg.chart;
 
 import com.storedobject.common.StringUtility;
+import com.storedobject.svg.Element;
+import com.storedobject.svg.Styles;
 import com.storedobject.svg.Svg;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -28,6 +32,7 @@ public class Values {
     private String labelNameColor = "#222";
     private double total = Double.NaN;
     private String defaultValueColor = "#3b82f6";
+    private final Map<String, Styles> styles = new HashMap<>();
 
     /**
      * Constructor.
@@ -64,7 +69,7 @@ public class Values {
     }
 
     /**
-     * Set the label name (typically used as X-axis name).
+     * Set the label name (typically used as an X-axis name).
      *
      * @param labelName Label name.
      */
@@ -121,7 +126,7 @@ public class Values {
     }
 
     /**
-     * Set the value name (typically used as Y-axis name).
+     * Set the value name (typically used as a Y-axis name).
      *
      * @param valueName Value name.
      */
@@ -364,7 +369,7 @@ public class Values {
     }
 
     /**
-     * Convert a double to string with 2 decimal places.
+     * Convert a double to a string with 2 decimal places.
      *
      * @param v Value.
      * @return Formatted string.
@@ -418,7 +423,7 @@ public class Values {
     }
 
     /**
-     * Mark as not built.
+     * Mark as isn't built.
      */
     void unbuild() {
         built = false;
@@ -458,6 +463,48 @@ public class Values {
     }
 
     /**
+     * Sets the styles for the specified {@link Value}.
+     * If the provided {@link Value} is null, the method returns without making any changes.
+     *
+     * @param value The {@link Value} for which styles need to be set.
+     * @param styles The {@link Styles} to associate with the given {@link Value}.
+     */
+    public void setStyle(Value value, Styles styles) {
+        if(value == null) {
+            return;
+        }
+        this.styles.put(value.id, styles);
+    }
+
+    /**
+     * Retrieves the styles associated with the specified {@link Value}.
+     * If the provided {@link Value} is null, this method returns null.
+     *
+     * @param value The {@link Value} for which to retrieve the associated styles.
+     * @return The {@link Styles} associated with the specified {@link Value},
+     *         or null if the {@link Value} is null or has no associated styles.
+     */
+    public Styles getStyle(Value value) {
+        return value == null ? null : styles.get(value.id);
+    }
+
+    /**
+     * Constructs a string representation of all styles by iterating over the existing style definitions.
+     * Each style is built with its associated identifier and appended to the result, separated by new lines.
+     * If no styles are present, returns an empty string.
+     *
+     * @return A string containing all constructed styles, or an empty string if there are no styles.
+     */
+    public String buildStyles() {
+        if(styles.isEmpty()) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        styles.forEach((id, styles) -> sb.append(styles.build(id)).append("\n"));
+        return sb.toString();
+    }
+
+    /**
      * Represents a single data point in the chart.
      *
      * @param label Label for the data point.
@@ -466,7 +513,33 @@ public class Values {
      *
      * @author Syam
      */
-    public record Value(Object label, double value, String color) {
+    public record Value(Object label, double value, String color, String id) {
+
+        /**
+         * Constructor.
+         *
+         * @param label Label.
+         * @param value Value.
+         * @param color Color.
+         * @param id Whatever value passed is ignored and a unique ID is generated.
+         */
+        public Value(Object label, double value, String color, @SuppressWarnings("unused") String id) {
+            this.label = label;
+            this.value = value;
+            this.color = color;
+            this.id = Element.ID();
+        }
+
+        /**
+         * Constructor.
+         *
+         * @param label Label.
+         * @param value Value.
+         * @param color Color.
+         */
+        public Value(Object label, double value, String color) {
+            this(label, value, color, null);
+        }
 
         /**
          * Constructor.
@@ -475,7 +548,7 @@ public class Values {
          * @param value Value.
          */
         public Value(Object label, double value) {
-            this(label, value, null);
+            this(label, value, null, null);
         }
     }
 }

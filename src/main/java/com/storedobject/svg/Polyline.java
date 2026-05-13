@@ -20,6 +20,7 @@ public class Polyline extends Element {
      * Constructor.
      */
     public Polyline() {
+        this((String) null);
     }
 
     /**
@@ -28,6 +29,15 @@ public class Polyline extends Element {
      * @param coordinates Coordinates (x1, y1, x2, y2, ...).
      */
     public Polyline(double... coordinates) {
+        this(null, coordinates);
+    }
+
+    protected Polyline(String tag) {
+        super(tag);
+    }
+
+    protected Polyline(String tag, double... coordinates) {
+        this(tag == null ? "polyline" : tag);
         for (int i = 0; i < coordinates.length; i += 2) {
             addPoint(coordinates[i], coordinates[i + 1]);
         }
@@ -93,7 +103,7 @@ public class Polyline extends Element {
         String pStr = points.stream()
                 .map(p -> Svg.toString(p.x(), 4) + "," + Svg.toString(p.y(), 4))
                 .collect(Collectors.joining(" "));
-        svg = styles("polyline") + "<polyline points=\"" + pStr + "\"/>";
+        svg = styleStart() + "points=\"" + pStr + "\"/>" + styleEnd();
         width = points.stream().mapToDouble(Point::x).max().orElse(0);
         height = points.stream().mapToDouble(Point::y).max().orElse(0);
         built = true;

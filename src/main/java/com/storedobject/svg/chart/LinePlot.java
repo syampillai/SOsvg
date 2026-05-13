@@ -6,8 +6,25 @@ package com.storedobject.svg.chart;
  *
  * @author Syam
  */
-public class Plot extends Chart {
+public class LinePlot extends Chart {
 
+    private static final String start = """
+                  <defs>
+                    <style>
+                      text {
+                        font-family: Arial, Helvetica, sans-serif;
+                        font-size: 13px;
+                        fill: #333;
+                      }
+                      .axis-label {
+                        font-size: 10px;
+                        font-weight: bold;
+                        fill: ${LC};
+                      }
+                      ${V-STYLES}
+                    </style>
+                  </defs>
+                  """;
     private final int tickCount;
     private final double tickStart;
     private double tickStep;
@@ -24,7 +41,7 @@ public class Plot extends Chart {
      * @param tickStep The step value between Y-axis ticks.
      * @param tickCount The number of ticks on the Y-axis.
      */
-    public Plot(Values values, double tickStart, double tickStep, int tickCount) {
+    public LinePlot(Values values, double tickStart, double tickStep, int tickCount) {
         super(values);
         values.setDefaultValueColor(plotColor);
         this.tickCount = tickCount <= 0 ? 10 : tickCount;
@@ -196,33 +213,14 @@ public class Plot extends Chart {
         height = h + (values.getLabelName() == null ? 0 : 10);
         int i;
         StringBuilder s = new StringBuilder();
-        s.append("""
-                  <defs>
-                    <style>
-                      text {
-                        font-family: Arial, Helvetica, sans-serif;
-                        font-size: 13px;
-                        fill: #333;
-                      }
-                      .axis-label {
-                        font-size: 10px;
-                        font-weight: bold;
-                        fill: ${LC};
-                      }
-                    </style>
-                  </defs>
-                  """);
-        s.append("<line x1=\"").append(left).append("\" y1=\"");
-        s.append(h - 40);
-        s.append("\" x2=\"").append((left + 10) + (35 * n)).append("\" y2=\"");
-        s.append(h - 40);
-        s.append("\" stroke=\"").append(axisColor).append("\"/>\n");
-        s.append("<line x1=\"").append(left).append("\" y1=\"");
-        s.append(30);
-        s.append("\" x2=\"").append(left).append("\" y2=\"");
-        s.append(h - 40);
-        s.append("\" stroke=\"").append(axisColor).append("\"/>\n");
-        s.append("<polyline fill=\"none\" stroke=\"").append(plotColor).append("\" stroke-width=\"2\"\npoints=\"");
+        s.append(start.replace("${V-STYLES}", values.buildStyles()))
+                .append("<line x1=\"").append(left).append("\" y1=\"")
+                .append(h - 40).append("\" x2=\"").append((left + 10) + (35 * n)).append("\" y2=\"")
+                .append(h - 40).append("\" stroke=\"").append(axisColor).append("\"/>\n")
+                .append("<line x1=\"").append(left).append("\" y1=\"").append(30).append("\" x2=\"")
+                .append(left).append("\" y2=\"").append(h - 40).append("\" stroke=\"")
+                .append(axisColor).append("\"/>\n").append("<polyline fill=\"none\" stroke=\"")
+                .append(plotColor).append("\" stroke-width=\"2\"\npoints=\"");
         for(i = 0; i < n; i++) {
             if(i > 0) {
                 s.append(" ");
@@ -240,9 +238,12 @@ public class Plot extends Chart {
             s.append("<text x=\"").append(left + (40 * i) - 5).append("\" y=\"").append(h - 28).append("\"")
                     .append(" class=\"axis-label\">${X").append(i).append("}</text>\n");
         }
+        Values.Value v;
         for(i = 0; i < n; i++) {
-            s.append("<circle cx=\"").append(left + (i * 40)).append("\" cy=\"${V").append(i)
-                    .append("}\" r=\"3\" stroke=\"").append(values.getColor(values.get(i)))
+            v = values.get(i);
+            s.append("<circle id=\"").append(v.id()).append("\" cx=\"").append(left + (i * 40))
+                    .append("\" cy=\"${V").append(i)
+                    .append("}\" r=\"3\" stroke=\"").append(values.getColor(v))
                     .append("\"><title>${T").append(i).append("}</title></circle>\n");
         }
         String label = values.getLabelName();

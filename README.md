@@ -17,6 +17,7 @@ A simple, easy to use and flexible SVG manipulation library with some basic char
 - **Charting Capabilities**: Easy-to-use chart types:
     - `Bars` (Bar Chart)
     - `Pie` (Pie Chart)
+    - `LinePlot` (Line Chart)
     - `DayPlot`, `MonthPlot`, `YearPlot` (Temporal Plots)
 - **Canvas System**: A `Canvas` class to aggregate and manage multiple SVG elements and charts with clipping support.
 - **Fluent API**: Many classes support a fluent interface for easy object creation and configuration.
@@ -30,7 +31,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>com.storedobject</groupId>
     <artifactId>so-svg</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 </dependency>
 ```
 

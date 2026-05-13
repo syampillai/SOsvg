@@ -9,7 +9,7 @@ import java.util.Date;
  *
  * @author Syam
  */
-public class MonthPlot extends Plot {
+public class MonthPlot extends LinePlot {
 
     /**
      * Constructor.

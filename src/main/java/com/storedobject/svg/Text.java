@@ -28,6 +28,7 @@ public class Text extends Element {
      * @param text Text.
      */
     public Text(double x, double y, String text) {
+        super("text");
         this.x = x;
         this.y = y;
         this.text = text;
@@ -224,7 +225,7 @@ public class Text extends Element {
         if( text == null ) {
             text = "";
         }
-        svg = styles("text") + "<text x=\"" + x + "\" y=\"" + y + "\">" + escapeXml(text) + "</text>";
+        svg = styleStart() + "x=\"" + x + "\" y=\"" + y + "\">" + escapeXml(text) + "</text>" + styleEnd();
         // Width and height of text are hard to estimate without font metrics.
         width = x + text.length() * 10;
         height = y + 10;

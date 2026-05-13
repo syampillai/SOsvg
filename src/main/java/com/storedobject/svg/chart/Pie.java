@@ -18,6 +18,7 @@ public class Pie extends Chart {
                         font-size: 13px;
                         fill: #333;
                       }
+                      ${V-STYLES}
                     </style>
                   </defs>
                 """;
@@ -139,7 +140,7 @@ public class Pie extends Chart {
         colorize();
         values.build();
 
-        StringBuilder svg = new StringBuilder(start);
+        StringBuilder svg = new StringBuilder(start.replace("${V-STYLES}", values.buildStyles()));
 
         boolean isDonut = isDonut();
         String radius = Values.toString(radius());
@@ -188,8 +189,8 @@ public class Pie extends Chart {
                 );
             }
 
-            svg.append(String.format("<path d=\"%s\" fill=\"%s\" stroke=\"white\" stroke-width=\"2\"><title>%s</title></path>\n",
-                    pathData, values.getColor(slice), valueS(slice)));
+            svg.append(String.format("<path id=\"%s\" d=\"%s\" fill=\"%s\" stroke=\"white\" stroke-width=\"2\"><title>%s</title></path>\n",
+                    slice.id(), pathData, values.getColor(slice), valueS(slice)));
 
             currentAngle = endAngle;
         }

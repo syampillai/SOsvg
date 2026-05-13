@@ -27,6 +27,7 @@ public class Circle extends Element {
      * @param r Radius.
      */
     public Circle(double cx, double cy, double r) {
+        super("circle");
         this.cx = cx;
         this.cy = cy;
         this.r = r;
@@ -206,7 +207,7 @@ public class Circle extends Element {
         if(built) {
             return;
         }
-        svg = styles("circle") + "<circle cx=\"" + cx + "\" cy=\"" + cy + "\" r=\"" + r + "\"/>";
+        svg = styleStart() + "cx=\"" + cx + "\" cy=\"" + cy + "\" r=\"" + r + "\"/>" + styleEnd();
         width = cx + r;
         height = cy + r;
         built = true;

@@ -29,6 +29,7 @@ public class Ellipse extends Element {
      * @param ry Radius Y.
      */
     public Ellipse(double cx, double cy, double rx, double ry) {
+        super("ellipse");
         this.cx = cx;
         this.cy = cy;
         this.rx = rx;
@@ -215,7 +216,8 @@ public class Ellipse extends Element {
         if(built) {
             return;
         }
-        svg = styles("ellipse") + "<ellipse cx=\"" + cx + "\" cy=\"" + cy + "\" rx=\"" + rx + "\" ry=\"" + ry + "\"/>";
+        svg = styleStart() + "cx=\"" + cx + "\" cy=\"" + cy + "\" rx=\"" + rx + "\" ry=\"" + ry
+                + "\"/>" + styleEnd();
         width = cx + rx;
         height = cy + ry;
         built = true;

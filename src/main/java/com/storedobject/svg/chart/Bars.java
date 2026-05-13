@@ -30,6 +30,7 @@ public class Bars extends Chart {
                         font-weight: bold;
                         fill: ${VNC};
                       }
+                      ${V-STYLES}
                     </style>
                   </defs>
                   <text class="y-axis-label" x="15" y="40" transform="rotate(90, 15, 40)" text-anchor="start">${YL} →</text>
@@ -84,7 +85,8 @@ public class Bars extends Chart {
         if(valueName == null) {
             valueName = "";
         }
-        StringBuilder svg = new StringBuilder(start.replace("${XL}", labelName)
+        StringBuilder svg = new StringBuilder(start.replace("${V-STYLES}", values.buildStyles())
+                .replace("${XL}", labelName)
                 .replace("${YL}", valueName)
                 .replace("${LNC}", values.getLabelNameColor())
                 .replace("${VNC}", values.getValueNameColor()));
@@ -95,7 +97,7 @@ public class Bars extends Chart {
         for(Values.Value bar: values.list()) {
             w = bar.value() / max * (width - 50);
             color = values.getColor(bar);
-            svg.append("<rect x=\"35\" y=\"")
+            svg.append("<rect id=\"").append(bar.id()).append("\" x=\"35\" y=\"")
                     .append(y)
                     .append("\" width=\"")
                     .append(Values.toString(w))
