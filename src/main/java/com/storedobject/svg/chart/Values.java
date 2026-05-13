@@ -510,6 +510,7 @@ public class Values {
      * @param label Label for the data point.
      * @param value Numerical value.
      * @param color Optional color for the data point.
+     * @param id Whatever value passed is ignored and a unique ID is generated.
      *
      * @author Syam
      */

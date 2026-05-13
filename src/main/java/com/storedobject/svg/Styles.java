@@ -12,6 +12,13 @@ import java.util.Map;
 public class Styles extends HashMap<String, String> {
 
     /**
+     * Creates a new instance of the Styles class, which extends HashMap. This constructor
+     * initializes an empty map that will hold CSS property-value pairs for style definitions.
+     */
+    public Styles() {
+    }
+
+    /**
      * Constructs a CSS style definition block for the specified ID based on the current
      * map entries, where each entry represents a CSS property and its value.
      *

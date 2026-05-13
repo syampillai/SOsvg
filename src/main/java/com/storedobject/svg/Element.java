@@ -38,6 +38,8 @@ public abstract class Element extends Svg {
      * Constructs a new instance of the Element class.
      * This serves as the base constructor for all SVG elements,
      * initializing the object without setting specific styles or properties.
+     *
+     * @param tag The SVG tag associated with this element.
      */
     public Element(String tag) {
         this.tag = tag;
@@ -85,7 +87,7 @@ public abstract class Element extends Svg {
     /**
      * Generates the closing tag for a styled group element if styles are present.
      *
-     * @return A string containing the closing tag "</g>" if styles are defined for the element;
+     * @return A string containing the closing tag if styles are defined for the element;
      *         otherwise, an empty string.
      */
     protected String styleEnd() {
