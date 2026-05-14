@@ -139,35 +139,28 @@ public class Pie extends Chart {
         }
         colorize();
         values.build();
-
         StringBuilder svg = new StringBuilder(start.replace("${V-STYLES}", values.buildStyles(this)));
-
         boolean isDonut = isDonut();
         String radius = Values.toString(radius());
         String donutHoleRadius = Values.toString(this.donutHole);
         String centerX = Values.toString(width / 2.0);
         String centerY = Values.toString(height / 2.0);
-
         // Draw pie slices
         double currentAngle = -90; // Start from top (12 o'clock)
         for (Values.Value slice : values.list()) {
             double angleSweep = values.getPercentage(slice) * 3.6; // 360° * (percentage / 100)
             double endAngle = currentAngle + angleSweep;
-
             // Calculate coordinates for the arc
             Point start = pointOnCircle(currentAngle);
             Point end = pointOnCircle(endAngle);
-
             // Determine if arc is more than 180 degrees
             boolean largeArc = angleSweep > 180;
-
             // Build path for the slice
             String pathData;
             if (isDonut) {
                 // Donut slice (arc with inner radius)
                 Point innerStart = pointOnCircle(currentAngle, this.donutHole);
                 Point innerEnd = pointOnCircle(endAngle, this.donutHole);
-
                 pathData = String.format(
                         "M %s,%s L %s,%s A %s,%s 0 %s 1 %s,%s L %s,%s A %s,%s 0 %s 0 %s,%s Z",
                         start.sx(), start.sy(),
@@ -188,19 +181,15 @@ public class Pie extends Chart {
                         end.sx(), end.sy()
                 );
             }
-
-            svg.append(String.format("<path id=\"%s\" d=\"%s\" fill=\"%s\" stroke=\"white\" stroke-width=\"2\"><title>%s</title></path>\n",
-                    slice.id(this), pathData, values.getColor(slice), valueS(slice)));
-
+            svg.append(String.format("<path id=\"%s\" d=\"%s\" fill=\"%s\" stroke=\"white\" stroke-width=\"2\" />\n",
+                    slice.id(this), pathData, values.getColor(slice)));
             currentAngle = endAngle;
         }
-
         // Donut center circle
         if (isDonut) {
             svg.append(String.format(
                     "<circle cx=\"%s\" cy=\"%s\" r=\"%s\" fill=\"none\" stroke=\"#e5e7eb\" stroke-width=\"2\"/>\n",
                     centerX, centerY, donutHoleRadius));
-
             // Center text
             svg.append(String.format(
                     "<text x=\"%s\" y=\"%s\" text-anchor=\"middle\" fill=\"#374151\">Total</text>\n",
@@ -210,16 +199,12 @@ public class Pie extends Chart {
                     "<text x=\"%s\" y=\"%s\" text-anchor=\"middle\" fill=\"#1f2937\">%s</text>\n",
                     centerX, Values.toString((height / 2.0) + 15), values.toUnit(values.getTotal())));
         }
-
         // Legend
         svg.append(generateLegend());
 
         this.svg = svg.toString();
     }
 
-    /**
-     * Calculates a point on the circle at a given angle.
-     */
     private Point pointOnCircle(double angleDegrees) {
         return pointOnCircle(angleDegrees, radius());
     }
@@ -233,9 +218,6 @@ public class Pie extends Chart {
         return new Point(x, y);
     }
 
-    /**
-     * Generates the legend SVG.
-     */
     private String generateLegend() {
         if (!showLegend) {
             return "";

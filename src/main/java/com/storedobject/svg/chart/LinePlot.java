@@ -114,7 +114,6 @@ public class LinePlot extends Chart {
         for(int i = 0; i < n; i++) {
             v = values.get(i);
             svg = svg.replace("${X" + i + "}", values.getLabel(v));
-            svg = svg.replace("${T" + i + "}", values.getValue(v));
         }
         double d, min = Double.POSITIVE_INFINITY, max = Double.NEGATIVE_INFINITY;
         for(Values.Value value: values.list()) {
@@ -244,7 +243,7 @@ public class LinePlot extends Chart {
             s.append("<circle id=\"").append(v.id(this)).append("\" cx=\"").append(left + (i * 40))
                     .append("\" cy=\"${V").append(i)
                     .append("}\" r=\"3\" stroke=\"").append(values.getColor(v))
-                    .append("\"><title>${T").append(i).append("}</title></circle>\n");
+                    .append("\" />\n");
         }
         String label = values.getLabelName();
         if(label != null) {
