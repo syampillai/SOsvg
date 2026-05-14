@@ -207,7 +207,8 @@ public class Circle extends Element {
         if(built) {
             return;
         }
-        svg = styleStart() + "cx=\"" + cx + "\" cy=\"" + cy + "\" r=\"" + r + "\"/>" + styleEnd();
+        svg = styleStart() + "cx=\"" + toString(cx, 2) + "\" cy=\"" + toString(cy, 2) + "\" r=\""
+                + toString(r, 2) + "\"/>" + styleEnd();
         width = cx + r;
         height = cy + r;
         built = true;

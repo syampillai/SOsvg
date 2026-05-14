@@ -1,6 +1,7 @@
 package com.storedobject.svg.chart;
 
 import com.storedobject.svg.Canvas;
+import com.storedobject.svg.Circle;
 import com.storedobject.svg.Star;
 
 public class Test {
@@ -39,5 +40,8 @@ public class Test {
         System.err.println(c.getSvg());
         //System.err.println("--- CANVAS ---");
         //System.err.println(canvas.getSvg());
+        Circle c1 = new Circle(100, 100, 50);
+        System.err.println(c1.getSvg());
+        System.err.println(c1.flipHorizontally().getSvg());
     }
 }

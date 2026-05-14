@@ -184,10 +184,10 @@ public abstract class Svg {
      * Generates a unique string identifier for the given numerical ID.
      *
      * @param id The numerical ID to be converted into a string identifier.
-     * @return A string in the format "so-svg-id-" followed by the numerical ID.
+     * @return A string in the format "so-svg-" followed by the numerical ID.
      */
     public static String ID(long id) {
-        return "so-svg-id-" + id;
+        return "so-svg-" + id;
     }
 
     /**
@@ -745,17 +745,22 @@ public abstract class Svg {
 
         @Override
         public double transformWidth(double width) {
-            return width * scaleX;
+            return Math.abs(width * scaleX);
         }
 
         @Override
         public double transformHeight(double height) {
-            return height * scaleY;
+            return Math.abs(height * scaleY);
         }
 
         @Override
         public String transform(String svg) {
-            return "<g transform=\"translate(" + x() + "," + y() + ") \"scale(" + Svg.toString(this.scaleX, 2)
+            if(this.svg.x == 0 && this.svg.y == 0) {
+                return "<g transform=\"scale(" + Svg.toString(this.scaleX, 2)
+                        + "," + Svg.toString(this.scaleY, 2)
+                        + ")\">" + svg + "</g>";
+            }
+            return "<g transform=\"translate(" + x() + "," + y() + ") scale(" + Svg.toString(this.scaleX, 2)
                     + "," + Svg.toString(this.scaleY, 2)
                     + ") translate(" + xReverse() + "," + yReverse() + ")\">" + svg + "</g>";
         }

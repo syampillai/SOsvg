@@ -216,7 +216,8 @@ public class Ellipse extends Element {
         if(built) {
             return;
         }
-        svg = styleStart() + "cx=\"" + cx + "\" cy=\"" + cy + "\" rx=\"" + rx + "\" ry=\"" + ry
+        svg = styleStart() + "cx=\"" + toString(cx, 2) + "\" cy=\"" + toString(cy, 2) + "\" rx=\""
+                + toString(rx, 2) + "\" ry=\"" + toString(ry, 2)
                 + "\"/>" + styleEnd();
         width = cx + rx;
         height = cy + ry;
