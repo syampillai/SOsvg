@@ -47,14 +47,6 @@
         </developer>
     </developers>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.storedobject</groupId>
-            <artifactId>so-common</artifactId>
-            <version>6.1.7</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>

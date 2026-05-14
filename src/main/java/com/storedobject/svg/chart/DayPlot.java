@@ -1,8 +1,8 @@
 package com.storedobject.svg.chart;
 
-import com.storedobject.common.DateUtility;
-
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 /**
  * A plot for daily data.
@@ -21,7 +21,7 @@ public class DayPlot extends LinePlot {
      * @param tickStep Step value between Y-axis ticks.
      * @param tickCount Number of ticks on the Y-axis.
      */
-    public DayPlot(Date startDate, double[] values, String unit, double tickStart, double tickStep, int tickCount) {
+    public DayPlot(LocalDate startDate, double[] values, String unit, double tickStart, double tickStep, int tickCount) {
         super(values(startDate, values, unit), tickStart, tickStep, tickCount);
     }
 
@@ -35,8 +35,8 @@ public class DayPlot extends LinePlot {
      * @param tickCount Number of ticks on the Y-axis.
      * @param endDate Ending date of the data.
      */
-    public DayPlot(double[] values, String unit, double tickStart, double tickStep, int tickCount, Date endDate) {
-        this(DateUtility.addYear(endDate, 1 - values.length), values, unit, tickStart, tickStep, tickCount);
+    public DayPlot(double[] values, String unit, double tickStart, double tickStep, int tickCount, LocalDate endDate) {
+        this(endDate.plusDays(1 - values.length), values, unit, tickStart, tickStep, tickCount);
     }
 
     /**
@@ -49,14 +49,14 @@ public class DayPlot extends LinePlot {
      * @param tickCount Number of ticks on the Y-axis.
      */
     public DayPlot(double[] values, String unit, double tickStart, double tickStep, int tickCount) {
-        this(values, unit, tickStart, tickStep, tickCount, DateUtility.today());
+        this(values, unit, tickStart, tickStep, tickCount, LocalDate.now());
     }
 
-    private static Values values(Date startDate, double[] values, String unit) {
+    private static Values values(LocalDate startDate, double[] values, String unit) {
         Values v = new Values(unit);
         for (double value : values) {
-            v.add(new Values.Value(DateUtility.getWeekName(startDate), value));
-            startDate = DateUtility.addDay(startDate, 1);
+            v.add(new Values.Value(startDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault()), value));
+            startDate = startDate.plusDays(1);
         }
         return v;
     }

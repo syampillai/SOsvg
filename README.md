@@ -35,7 +35,7 @@ Add the following dependency to your `pom.xml`:
 </dependency>
 ```
 
-*Note: This library depends on `so-common`.*
+*Note: This library doesn't depend on any other libraries!*
 
 ## Usage Examples
 

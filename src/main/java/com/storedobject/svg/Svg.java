@@ -1,7 +1,7 @@
 package com.storedobject.svg;
 
-import com.storedobject.common.StringUtility;
-
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.DoubleSupplier;
 
@@ -14,6 +14,11 @@ import java.util.function.DoubleSupplier;
  */
 public abstract class Svg {
 
+    private static final NumberFormat format = NumberFormat.getNumberInstance();
+    static {
+        format.setMaximumIntegerDigits(30);
+        format.setRoundingMode(RoundingMode.HALF_UP);
+    }
     private static final AtomicLong ID = new AtomicLong();
 
     /**
@@ -137,7 +142,7 @@ public abstract class Svg {
      * @return Formatted string.
      */
     public static String toString(double v, int decimals) {
-        String s = StringUtility.format(v, decimals);
+        String s = format(v, decimals);
         if(s.contains(".")) {
             while (s.endsWith("0")) {
                 s = s.substring(0, s.length() - 1);
@@ -145,6 +150,25 @@ public abstract class Svg {
             if (s.endsWith(".")) {
                 s = s.substring(0, s.length() - 1);
             }
+        }
+        return s;
+    }
+
+    private static String format(double value, int decimals) {
+        boolean negative = value < 0;
+        if(negative) {
+            value = -value;
+        }
+        if(decimals < 0) {
+            format.setMinimumFractionDigits(decimals < -1 ? -decimals : 14);
+            format.setMaximumFractionDigits(decimals < -1 ? -decimals : 14);
+        } else {
+            format.setMinimumFractionDigits(decimals);
+            format.setMaximumFractionDigits(decimals);
+        }
+        String s = format.format(value);
+        if(negative) {
+            return "-" + s;
         }
         return s;
     }

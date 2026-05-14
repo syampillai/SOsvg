@@ -1,6 +1,5 @@
 package com.storedobject.svg.chart;
 
-import com.storedobject.common.StringUtility;
 import com.storedobject.svg.Styles;
 import com.storedobject.svg.Svg;
 
@@ -21,7 +20,7 @@ public class Values {
     private boolean built = false;
     private int sizeWhenBuilt = -1;
     private String unit;
-    private Function<Value, String> labelFunction = v -> StringUtility.toString(v.label);
+    private Function<Value, String> labelFunction = v -> v.label.toString();
     private Function<Value, String> valueFunction = this::toUnit;
     private String labelName, valueName;
     private String valueNameColor = "#3b82f6";
@@ -186,7 +185,7 @@ public class Values {
      * @param labelFunction Label function.
      */
     public void setLabelFunction(Function<Value, String> labelFunction) {
-        this.labelFunction = labelFunction;
+        this.labelFunction = labelFunction == null ? v -> v.label.toString() : labelFunction;
         built = false;
     }
 
@@ -196,7 +195,7 @@ public class Values {
      * @param valueFunction Value function.
      */
     public void setValueFunction(Function<Value, String> valueFunction) {
-        this.valueFunction = valueFunction;
+        this.valueFunction = valueFunction == null ? this::toUnit : valueFunction;
         built = false;
     }
 
@@ -440,21 +439,19 @@ public class Values {
         }
     }
 
-    private boolean isNull(Object o) {
-        return o == null || StringUtility.toString(o).isBlank();
-    }
-
-    private Object nonNull(Object o) {
-        return isNull(o) ? ("X" + (values.size() + 1)) : o;
-    }
-
-    private Object nonNull() {
-        return nonNull((Object) null);
+    private boolean isNull(Value v) {
+        if(v == null) {
+            return true;
+        }
+        String s = labelFunction.apply(v);
+        return s == null || s.isBlank();
     }
 
     private Value nonNull(Value v) {
-        return v == null ? new Value(nonNull(), 0, null)
-                : (isNull(v.label) ? new Value(nonNull(v.label), v.value, v.color) : v);
+        if(v == null || isNull(v)) {
+            return new Value(("X" + (values.size() + 1)), v == null ? 0 : v.value, v == null ? null : v.color);
+        }
+        return v;
     }
 
     /**

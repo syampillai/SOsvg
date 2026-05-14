@@ -1,8 +1,8 @@
 package com.storedobject.svg.chart;
 
-import com.storedobject.common.DateUtility;
-
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 /**
  * A plot for monthly data.
@@ -21,7 +21,7 @@ public class MonthPlot extends LinePlot {
      * @param tickStep Step value between Y-axis ticks.
      * @param tickCount Number of ticks on the Y-axis.
      */
-    public MonthPlot(Date startDate, double[] values, String unit, double tickStart, double tickStep, int tickCount) {
+    public MonthPlot(LocalDate startDate, double[] values, String unit, double tickStart, double tickStep, int tickCount) {
         super(values(startDate, values, unit), tickStart, tickStep, tickCount);
     }
 
@@ -35,8 +35,8 @@ public class MonthPlot extends LinePlot {
      * @param tickCount Number of ticks on the Y-axis.
      * @param endDate Ending date of the data.
      */
-    public MonthPlot(double[] values, String unit, double tickStart, double tickStep, int tickCount, Date endDate) {
-        this(DateUtility.addMonth(endDate, 1 - values.length), values, unit, tickStart, tickStep, tickCount);
+    public MonthPlot(double[] values, String unit, double tickStart, double tickStep, int tickCount, LocalDate endDate) {
+        this(endDate.plusMonths(1 - values.length), values, unit, tickStart, tickStep, tickCount);
     }
 
     /**
@@ -49,14 +49,14 @@ public class MonthPlot extends LinePlot {
      * @param tickCount Number of ticks on the Y-axis.
      */
     public MonthPlot(double[] values, String unit, double tickStart, double tickStep, int tickCount) {
-        this(values, unit, tickStart, tickStep, tickCount, DateUtility.today());
+        this(values, unit, tickStart, tickStep, tickCount, LocalDate.now());
     }
 
-    private static Values values(Date startDate, double[] values, String unit) {
+    private static Values values(LocalDate startDate, double[] values, String unit) {
         Values v = new Values(unit);
         for (double value : values) {
-            v.add(new Values.Value(DateUtility.getMonthName(startDate), value));
-            startDate = DateUtility.addMonth(startDate, 1);
+            v.add(new Values.Value(startDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.getDefault()), value));
+            startDate = startDate.plusMonths(1);
         }
         return v;
     }
