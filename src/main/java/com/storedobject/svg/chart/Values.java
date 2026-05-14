@@ -540,7 +540,7 @@ public class Values {
          *
          * @return the identifier
          */
-        public long getId() {
+        public final long getId() {
             return id;
         }
 
@@ -550,7 +550,7 @@ public class Values {
          * @param svg the SVG where this value is being used
          * @return the SVG element ID
          */
-        public String id(Svg svg) {
+        public final String id(Svg svg) {
             return Svg.ID(id) + "-" + svg.getId();
         }
 
