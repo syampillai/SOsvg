@@ -1,7 +1,5 @@
 package com.storedobject.svg;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 /**
  * Represents an SVG element. Unlike the {@link Svg} class, this class is more specific to individual SVG elements
  * and does not have the concept combining tage. It is used to represent standalone SVG tags like
@@ -12,17 +10,10 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public abstract class Element extends Svg {
 
-    private static final AtomicLong ID = new AtomicLong();
-
     /**
      * The SVG tag associated with this element.
      */
     protected final String tag;
-
-    /**
-     * Unique identifier for this element.
-     */
-    protected final String id = ID();
 
     /**
      * Styles for this element.
@@ -78,6 +69,7 @@ public abstract class Element extends Svg {
      * @return Starting part of the style string.
      */
     protected String styleStart() {
+        String id = ID(this.id);
         String s = tag + " id=\"" + id + "\" cursor=\"pointer\" ";
         if(styles.isEmpty()) {
             return "<" + s;
@@ -96,42 +88,5 @@ public abstract class Element extends Svg {
      */
     protected String styleEnd() {
         return styles.isEmpty() ? "" : "</g>";
-    }
-
-    /**
-     * Generates a unique identifier string for an SVG element by utilizing the current ID value.
-     * This method internally invokes {@code IDValue()} to retrieve a unique numerical value and
-     * combines it with a predefined prefix using {@code ID(long id)}.
-     *
-     * @return A unique string identifier constructed for the SVG element in the format "so-svg-id-{id}".
-     */
-    public static String ID() {
-        return ID(IDValue());
-    }
-
-    /**
-     * Generates a unique numerical value to be used as an identifier.
-     * The ID value is maintained as a thread-safe atomic counter, ensuring
-     * uniqueness across multiple invocations. When the maximum value for
-     * a 64-bit signed integer is reached, the counter resets to zero.
-     *
-     * @return A unique {@code long} value incremented from the atomic counter.
-     */
-    public static long IDValue() {
-        if(ID.get() == Long.MAX_VALUE) {
-            ID.set(0);
-        }
-        return ID.incrementAndGet();
-    }
-
-    /**
-     * Generates a unique string identifier for an SVG element based on the provided numerical ID.
-     * The resulting identifier is prefixed with "so-svg-id-", followed by the specified ID value.
-     *
-     * @param id The numerical ID used to generate the unique identifier.
-     * @return A string representing the unique SVG element identifier in the format "so-svg-id-{id}".
-     */
-    public static String ID(long id) {
-        return "so-svg-id-" + id;
     }
 }

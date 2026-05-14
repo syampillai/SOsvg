@@ -1,7 +1,6 @@
 package com.storedobject.svg.chart;
 
 import com.storedobject.common.StringUtility;
-import com.storedobject.svg.Element;
 import com.storedobject.svg.Styles;
 import com.storedobject.svg.Svg;
 
@@ -463,17 +462,18 @@ public class Values {
      * Only values that are instances of {@code StyledValue} are processed, and their
      * individual styles are appended to the result.
      *
+     * @param svg The SVG where the styles are being used.
      * @return A concatenated string of styles for all {@code StyledValue} objects in the collection.
      */
-    public String buildStyles() {
+    public String buildStyles(Svg svg) {
         StringBuilder sb = new StringBuilder();
         values.stream().filter(v -> v instanceof StyledValue).forEach(v -> ((StyledValue) v)
-                .buildStyles(sb));
+                .buildStyles(sb, svg));
         return sb.toString();
     }
 
     /**
-     * Represents a single data point in the chart. This could be sub-classed to include additional attributes.
+     * Represents a single data point in the chart. This could be subclassed to include additional attributes.
      *
      * @author Syam
      */
@@ -495,7 +495,7 @@ public class Values {
             this.label = label;
             this.value = value;
             this.color = color;
-            this.id = Element.IDValue();
+            this.id = Svg.IDValue();
         }
 
         /**
@@ -547,10 +547,11 @@ public class Values {
         /**
          * Gets the SVG element identifier for this value.
          *
+         * @param svg the SVG where this value is being used
          * @return the SVG element ID
          */
-        public String id() {
-            return Element.ID(id);
+        public String id(Svg svg) {
+            return Svg.ID(id) + "-" + svg.getId();
         }
 
         @Override
@@ -623,9 +624,10 @@ public class Values {
          * Build the styles.
          *
          * @param sb String builder to build into.
+         * @param svg SVG where this value is being used.
          */
-        void buildStyles(StringBuilder sb) {
-            styles.build(sb, id());
+        void buildStyles(StringBuilder sb, Svg svg) {
+            styles.build(sb, id(svg));
         }
     }
 }

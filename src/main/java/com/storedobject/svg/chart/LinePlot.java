@@ -213,7 +213,7 @@ public class LinePlot extends Chart {
         height = h + (values.getLabelName() == null ? 0 : 10);
         int i;
         StringBuilder s = new StringBuilder();
-        s.append(start.replace("${V-STYLES}", values.buildStyles()))
+        s.append(start.replace("${V-STYLES}", values.buildStyles(this)))
                 .append("<line x1=\"").append(left).append("\" y1=\"")
                 .append(h - 40).append("\" x2=\"").append((left + 10) + (35 * n)).append("\" y2=\"")
                 .append(h - 40).append("\" stroke=\"").append(axisColor).append("\"/>\n")
@@ -241,7 +241,7 @@ public class LinePlot extends Chart {
         Values.Value v;
         for(i = 0; i < n; i++) {
             v = values.get(i);
-            s.append("<circle id=\"").append(v.id()).append("\" cx=\"").append(left + (i * 40))
+            s.append("<circle id=\"").append(v.id(this)).append("\" cx=\"").append(left + (i * 40))
                     .append("\" cy=\"${V").append(i)
                     .append("}\" r=\"3\" stroke=\"").append(values.getColor(v))
                     .append("\"><title>${T").append(i).append("}</title></circle>\n");

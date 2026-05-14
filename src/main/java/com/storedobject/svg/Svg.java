@@ -1,6 +1,8 @@
 package com.storedobject.svg;
 
 import com.storedobject.common.StringUtility;
+
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.DoubleSupplier;
 
 /**
@@ -11,6 +13,13 @@ import java.util.function.DoubleSupplier;
  * @author Syam
  */
 public abstract class Svg {
+
+    private static final AtomicLong ID = new AtomicLong();
+
+    /**
+     * Unique identifier.
+     */
+    protected final long id = IDValue();
 
     /**
      * Default constructor for the {@code Svg} class.
@@ -51,6 +60,15 @@ public abstract class Svg {
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public abstract boolean isBuilt();
+
+    /**
+     * Retrieves the unique identifier of the SVG object.
+     *
+     * @return The unique identifier as a long value.
+     */
+    public final long getId() {
+        return id;
+    }
 
     private String svg(String width, String height) {
         if(!isBuilt()) {
@@ -146,6 +164,30 @@ public abstract class Svg {
                 .replace(">", "&gt;")
                 .replace("\"", "&quot;")
                 .replace("'", "&apos;");
+    }
+
+    /**
+     * Generates a globally unique identifier in a thread-safe manner.
+     * The method increments the current ID value atomically. If the ID value
+     * reaches {@code Long.MAX_VALUE}, it resets to 0 before incrementing.
+     *
+     * @return A unique identifier as a long value.
+     */
+    public static long IDValue() {
+        if(ID.get() == Long.MAX_VALUE) {
+            ID.set(0);
+        }
+        return ID.incrementAndGet();
+    }
+
+    /**
+     * Generates a unique string identifier for the given numerical ID.
+     *
+     * @param id The numerical ID to be converted into a string identifier.
+     * @return A string in the format "so-svg-id-" followed by the numerical ID.
+     */
+    public static String ID(long id) {
+        return "so-svg-id-" + id;
     }
 
     /**

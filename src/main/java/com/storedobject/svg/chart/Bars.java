@@ -85,7 +85,7 @@ public class Bars extends Chart {
         if(valueName == null) {
             valueName = "";
         }
-        StringBuilder svg = new StringBuilder(start.replace("${V-STYLES}", values.buildStyles())
+        StringBuilder svg = new StringBuilder(start.replace("${V-STYLES}", values.buildStyles(this))
                 .replace("${XL}", labelName)
                 .replace("${YL}", valueName)
                 .replace("${LNC}", values.getLabelNameColor())
@@ -97,7 +97,7 @@ public class Bars extends Chart {
         for(Values.Value bar: values.list()) {
             w = bar.getValue() / max * (width - 50);
             color = values.getColor(bar);
-            svg.append("<rect id=\"").append(bar.id()).append("\" x=\"35\" y=\"")
+            svg.append("<rect id=\"").append(bar.id(this)).append("\" x=\"35\" y=\"")
                     .append(y)
                     .append("\" width=\"")
                     .append(Values.toString(w))
