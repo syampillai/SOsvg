@@ -90,12 +90,12 @@ public class Bars extends Chart {
                 .replace("${YL}", valueName)
                 .replace("${LNC}", values.getLabelNameColor())
                 .replace("${VNC}", values.getValueNameColor()));
-        double max = values.stream().mapToDouble(Values.Value::value).max().orElse(0);
+        double max = values.stream().mapToDouble(Values.Value::getValue).max().orElse(0);
         double w;
         int y = 42;
         String color;
         for(Values.Value bar: values.list()) {
-            w = bar.value() / max * (width - 50);
+            w = bar.getValue() / max * (width - 50);
             color = values.getColor(bar);
             svg.append("<rect id=\"").append(bar.id()).append("\" x=\"35\" y=\"")
                     .append(y)
@@ -107,7 +107,7 @@ public class Bars extends Chart {
             svg.append("<text class=\"bar-label\" x=\"45\" y=\"")
                     .append(y + 20)
                     .append("\" text-anchor=\"start\">")
-                    .append(bar.label())
+                    .append(bar.getLabel())
                     .append(" — ")
                     .append(values.toUnit(bar))
                     .append("</text>\n");

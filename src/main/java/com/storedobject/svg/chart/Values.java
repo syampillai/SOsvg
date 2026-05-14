@@ -5,10 +5,7 @@ import com.storedobject.svg.Element;
 import com.storedobject.svg.Styles;
 import com.storedobject.svg.Svg;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -32,7 +29,6 @@ public class Values {
     private String labelNameColor = "#222";
     private double total = Double.NaN;
     private String defaultValueColor = "#3b82f6";
-    private final Map<String, Styles> styles = new HashMap<>();
 
     /**
      * Constructor.
@@ -463,73 +459,30 @@ public class Values {
     }
 
     /**
-     * Sets the styles for the specified {@link Value}.
-     * If the provided {@link Value} is null, the method returns without making any changes.
+     * Builds and returns the styles associated with all values in the collection.
+     * Only values that are instances of {@code StyledValue} are processed, and their
+     * individual styles are appended to the result.
      *
-     * @param value The {@link Value} for which styles need to be set.
-     * @param styles The {@link Styles} to associate with the given {@link Value}.
-     */
-    public void setStyle(Value value, Styles styles) {
-        if(value == null) {
-            return;
-        }
-        this.styles.put(value.id, styles);
-    }
-
-    /**
-     * Retrieves the styles associated with the specified {@link Value}.
-     * If the provided {@link Value} is null, this method returns null.
-     *
-     * @param value The {@link Value} for which to retrieve the associated styles.
-     * @return The {@link Styles} associated with the specified {@link Value},
-     *         or null if the {@link Value} is null or has no associated styles.
-     */
-    public Styles getStyle(Value value) {
-        return value == null ? null : styles.get(value.id);
-    }
-
-    /**
-     * Constructs a string representation of all styles by iterating over the existing style definitions.
-     * Each style is built with its associated identifier and appended to the result, separated by new lines.
-     * If no styles are present, returns an empty string.
-     *
-     * @return A string containing all constructed styles, or an empty string if there are no styles.
+     * @return A concatenated string of styles for all {@code StyledValue} objects in the collection.
      */
     public String buildStyles() {
-        if(styles.isEmpty()) {
-            return "";
-        }
         StringBuilder sb = new StringBuilder();
-        styles.forEach((id, styles) -> sb.append(styles.build(id)).append("\n"));
+        values.stream().filter(v -> v instanceof StyledValue).forEach(v -> ((StyledValue) v)
+                .buildStyles(sb));
         return sb.toString();
     }
 
     /**
-     * Represents a single data point in the chart.
-     *
-     * @param label Label for the data point.
-     * @param value Numerical value.
-     * @param color Optional color for the data point.
-     * @param id Whatever value passed is ignored and a unique ID is generated.
+     * Represents a single data point in the chart. This could be sub-classed to include additional attributes.
      *
      * @author Syam
      */
-    public record Value(Object label, double value, String color, String id) {
+    public static class Value {
 
-        /**
-         * Constructor.
-         *
-         * @param label Label.
-         * @param value Value.
-         * @param color Color.
-         * @param id Whatever value passed is ignored and a unique ID is generated.
-         */
-        public Value(Object label, double value, String color, @SuppressWarnings("unused") String id) {
-            this.label = label;
-            this.value = value;
-            this.color = color;
-            this.id = Element.ID();
-        }
+        private final Object label;
+        private final double value;
+        private final String color;
+        private final long id;
 
         /**
          * Constructor.
@@ -539,7 +492,10 @@ public class Values {
          * @param color Color.
          */
         public Value(Object label, double value, String color) {
-            this(label, value, color, null);
+            this.label = label;
+            this.value = value;
+            this.color = color;
+            this.id = Element.IDValue();
         }
 
         /**
@@ -549,7 +505,127 @@ public class Values {
          * @param value Value.
          */
         public Value(Object label, double value) {
-            this(label, value, null, null);
+            this(label, value, null);
+        }
+
+        /**
+         * Gets the label associated with this value.
+         *
+         * @return the label
+         */
+        public Object getLabel() {
+            return label;
+        }
+
+        /**
+         * Gets the numeric value.
+         *
+         * @return the value
+         */
+        public double getValue() {
+            return value;
+        }
+
+        /**
+         * Gets the color associated with this value.
+         *
+         * @return the color, or {@code null} if no color is set
+         */
+        public String getColor() {
+            return color;
+        }
+
+        /**
+         * Gets the internal numeric identifier of this value.
+         *
+         * @return the identifier
+         */
+        public long getId() {
+            return id;
+        }
+
+        /**
+         * Gets the SVG element identifier for this value.
+         *
+         * @return the SVG element ID
+         */
+        public String id() {
+            return Element.ID(id);
+        }
+
+        @Override
+        public final boolean equals(Object obj) {
+            if (obj == this) return true;
+            if (!(obj instanceof Value that)) {
+                return false;
+            }
+            return this.id == that.id;
+        }
+
+        @Override
+        public final int hashCode() {
+            return Objects.hash(id);
+        }
+
+        @Override
+        public String toString() {
+            return "Value[" +
+                    "label=" + label + ", " +
+                    "value=" + value + ", " +
+                    "color=" + color + ", " +
+                    "id=" + id + ']';
+        }
+    }
+
+    /**
+     * Represents a value with associated styles.
+     *
+     * @author Syam
+     */
+    public static class StyledValue extends Value {
+
+        private final Styles styles;
+
+        /**
+         * Constructor.
+         *
+         * @param label Label.
+         * @param value Value.
+         * @param color Color.
+         * @param styles Styles.
+         */
+        public StyledValue(Object label, double value, String color, Styles styles) {
+            super(label, value, color);
+            this.styles = styles == null ? new Styles() : styles;
+        }
+
+        /**
+         * Constructor.
+         *
+         * @param label Label.
+         * @param value Value.
+         * @param styles Styles.
+         */
+        public StyledValue(Object label, double value, Styles styles) {
+            this(label, value, null, styles);
+        }
+
+        /**
+         * Get the styles.
+         *
+         * @return Styles.
+         */
+        public Styles getStyles() {
+            return styles;
+        }
+
+        /**
+         * Build the styles.
+         *
+         * @param sb String builder to build into.
+         */
+        void buildStyles(StringBuilder sb) {
+            styles.build(sb, id());
         }
     }
 }

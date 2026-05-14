@@ -118,11 +118,11 @@ public class LinePlot extends Chart {
         }
         double d, min = Double.POSITIVE_INFINITY, max = Double.NEGATIVE_INFINITY;
         for(Values.Value value: values.list()) {
-            if(value.value() < min) {
-                min = value.value();
+            if(value.getValue() < min) {
+                min = value.getValue();
             }
-            if(value.value() > max) {
-                max = value.value();
+            if(value.getValue() > max) {
+                max = value.getValue();
             }
         }
         max -= min;
@@ -133,7 +133,7 @@ public class LinePlot extends Chart {
             tickStep /= 2;
         }
         for(int i = 0; i < n; i++) {
-            d = values.get(i).value() - min;
+            d = values.get(i).getValue() - min;
             d = (h - 80) * d / max;
             if(Double.isNaN(d)) {
                 d = ((h - 80) >> 1) + 20;

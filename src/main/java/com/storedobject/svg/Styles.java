@@ -19,19 +19,18 @@ public class Styles extends HashMap<String, String> {
     }
 
     /**
-     * Constructs a CSS style definition block for the specified ID based on the current
-     * map entries, where each entry represents a CSS property and its value.
+     * Constructs a CSS style block for an element represented by a given ID.
+     * The method appends the CSS properties and their respective values stored in the current instance
+     * to the provided StringBuilder object, using the specified ID to define the block selector.
      *
-     * @param id the identifier for the CSS block (prepended with a hash '#' symbol)
-     * @return a string representing the CSS block with escaped property names and values
+     * @param sb the StringBuilder to which the CSS style block will be appended
+     * @param id the identifier of the CSS element for which the style block will be built
      */
-    public String build(String id) {
-        StringBuilder sb = new StringBuilder();
+    public void build(StringBuilder sb, String id) {
         sb.append("#").append(id).append(" {\n");
         for(Map.Entry<String, String> e: entrySet()) {
             sb.append(Svg.escapeXml(e.getKey())).append(": ").append(Svg.escapeXml(e.getValue())).append(";\n");
         }
         sb.append("}\n");
-        return sb.toString();
     }
 }
