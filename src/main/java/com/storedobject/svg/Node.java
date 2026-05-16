@@ -27,11 +27,9 @@ public abstract class Node {
     protected final long id = IDValue();
 
     /**
-     * Default constructor for the {@code Node} class.
-     * Initializes a new instance of the node object with default properties.
+     * Parent node of this node. For a top-level node (the ones directly under a {@link Document}, this will be null.
      */
-    public Node() {
-    }
+    protected Node parent;
 
     /**
      * SVG content of the node. This is typically set by the build() method. It should not contain the top level svg tag.
@@ -41,7 +39,7 @@ public abstract class Node {
 
     /**
      * Current x and y coordinates of this node. These could be set to any value so that the final SVG output
-     * will be translated to this location.
+     * will be translated to this location. The values are in the coordinate system of the parent node.
      */
     protected double x = 0, y = 0;
 
@@ -49,6 +47,13 @@ public abstract class Node {
      * The width and height of the node content.
      */
     protected double width = 600, height = 400;
+
+    /**
+     * Default constructor for the {@code Node} class.
+     * Initializes a new instance of the node object with default properties.
+     */
+    public Node() {
+    }
 
     /**
      * Build the content. This method is called internally to get before obtaining the output.
@@ -70,6 +75,24 @@ public abstract class Node {
      */
     public final long getId() {
         return id;
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        return obj instanceof Node && ((Node) obj).id == id;
+    }
+
+    @Override
+    public final int hashCode() {
+        return Long.hashCode(id);
+    }
+
+    public final Node getParent() {
+        return parent;
+    }
+
+    public final Node getRootParent() {
+        return parent == null ? this : parent.getRootParent();
     }
 
     /**

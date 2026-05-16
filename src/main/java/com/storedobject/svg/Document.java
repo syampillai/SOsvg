@@ -1,22 +1,62 @@
 package com.storedobject.svg;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * The Document class represents a collection of {@link Node} objects and provides functionality
- * to generate scalable vector graphic (SVG) output. It extends {@link ArrayList} to allow
- * storage and management of Node instances while adding SVG-specific methods to generate
+ * to generate scalable vector graphic (SVG) output. It allows the
+ * storage and management of {@link Node} instances while adding SVG-specific methods to generate
  * graphical representations of the contained nodes.
+ * <p>Note: When a node is added and if it has a parent, its root-parent is considered when the SVG is
+ * generated finally.</p>
+ *
+ * @author Syam
  */
-public class Document extends ArrayList<Node> {
+public class Document extends HashSet<Node> {
 
+    /**
+     * Default constructor for the Document class.
+     * Initializes a new instance of the Document without any content or nodes.
+     */
     public Document() {}
 
+    /**
+     * Constructs a new Document object, initializing it with a single Node.
+     *
+     * @param node The Node to be added to the Document during its creation.
+     */
     public Document(Node node) {
         add(node);
     }
 
+    /**
+     * Cleans up the current set by performing the following tasks:
+     * 1. Removes all null entries from the set.
+     * 2. Identifies all root nodes (nodes without a parent).
+     * 3. Removes all nodes that have a parent from the set.
+     * 4. Adds the root parent of each identified root node back to the set.
+     * <p></p>
+     * This method ensures that the set retains only root-level nodes and eliminates unnecessary or redundant
+     * child nodes during the cleanup process.
+     * <p>Note: You may call this method before doing generic {@link java.util.Set} operations. Otherwise, methods
+     * such as {@link #size()}, {@link #isEmpty()}, {@link #stream()}, etc. may return incorrect results.</p>
+     */
+    public void cleanUp() {
+        removeIf(Objects::isNull);
+        HashSet<Node> nodes = new HashSet<>();
+        for (Node node : this) {
+            if (node.parent != null) {
+                continue;
+            }
+            nodes.add(node);
+        }
+        removeIf(n -> n.parent != null);
+        nodes.forEach(n -> this.add(n.getRootParent()));
+    }
+
     private String svg(String width, String height) {
+        cleanUp();
         double x1, y1, w, h;
         String s;
         if(isEmpty()) {

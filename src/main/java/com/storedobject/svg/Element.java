@@ -2,7 +2,7 @@ package com.storedobject.svg;
 
 /**
  * Represents an SVG element. Unlike the {@link Node} class, this class is more specific to individual SVG elements
- * and does not have the concept combining tage. It is used to represent standalone SVG tags like
+ * and does not have the concept combining tags. It is used to represent standalone SVG tags like
  * <code>rect</code>,<code>circle</code>, etc. However, each element can have its own styles. It has a unique identifier
  * too.
  *
