@@ -1,35 +1,35 @@
 package com.storedobject.svg;
 
 /**
- * An SVG that is transformed using a {@link Transformer}.
+ * An node that is transformed using a {@link Transformer}.
  *
  * @author Syam
  */
-public class TransformedSvg extends Svg {
+public class TransformedNode extends Node {
 
     /**
-     * The embedded SVG.
+     * The embedded node.
      */
-    final Svg embedded;
+    final Node embedded;
 
     private Transformer transformer;
 
     /**
      * Constructor.
      *
-     * @param embedded The SVG to transform.
+     * @param embedded The node to transform.
      */
-    public TransformedSvg(Svg embedded) {
+    public TransformedNode(Node embedded) {
         this(embedded, null);
     }
 
     /**
      * Constructor.
      *
-     * @param embedded The SVG to transform.
+     * @param embedded The node to transform.
      * @param transformer The transformer to use.
      */
-    public TransformedSvg(Svg embedded, Transformer transformer) {
+    public TransformedNode(Node embedded, Transformer transformer) {
         this.embedded = embedded;
         this.transformer = transformer;
     }
@@ -40,7 +40,7 @@ public class TransformedSvg extends Svg {
      * @param transformer Transformer.
      * @return Self.
      */
-    public TransformedSvg transform(Transformer transformer) {
+    public TransformedNode transform(Transformer transformer) {
         this.transformer = transformer;
         return this;
     }
@@ -59,6 +59,7 @@ public class TransformedSvg extends Svg {
         this.x = transformer.transformX(embedded.getX());
         this.y = transformer.transformY(embedded.getY());
         if(this.width <= 0 || this.height <= 0) {
+            this.x = this.y = 0;
             this.width = 0.1;
             this.height = 0.1;
             this.svg = "<g></g>\n";
@@ -69,6 +70,6 @@ public class TransformedSvg extends Svg {
 
     @Override
     public final boolean isBuilt() {
-        return false; // We will always build because we don't know the changes in the embedded SVG
+        return false; // We will always build because we don't know the changes in the embedded node
     }
 }

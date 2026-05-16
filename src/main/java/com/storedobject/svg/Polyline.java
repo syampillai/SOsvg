@@ -118,7 +118,7 @@ public class Polyline extends Element {
             return;
         }
         String pStr = points.stream()
-                .map(p -> Svg.toString(p.x(), 4) + "," + Svg.toString(p.y(), 4))
+                .map(p -> Node.toString(p.x(), 4) + "," + Node.toString(p.y(), 4))
                 .collect(Collectors.joining(" "));
         svg = styleStart() + "points=\"" + pStr + "\"/>" + styleEnd();
         width = points.stream().mapToDouble(Point::x).max().orElse(0);

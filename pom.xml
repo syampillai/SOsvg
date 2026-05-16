@@ -15,11 +15,11 @@
     </properties>
 
     <groupId>com.storedobject</groupId>
-    <artifactId>so-svg</artifactId>
+    <artifactId>so-node</artifactId>
     <version>0.0.2</version>
     <packaging>jar</packaging>
 
-    <name>SO svg</name>
+    <name>SO node</name>
     <description>A simple, easy to use and flexible SVG manipulation library with some basic charting capabilities</description>
     <url>https://github.com/syampillai/${so-name}</url>
 

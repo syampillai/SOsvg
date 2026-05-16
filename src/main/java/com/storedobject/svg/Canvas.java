@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A canvas for drawing SVGs. It can contain multiple {@link Svg} objects.
+ * A canvas for drawing SVGs. It can contain multiple {@link Node} objects.
  *
  * @author Syam
  */
-public final class Canvas extends Svg {
+public final class Canvas extends Node {
 
     private final AtomicInteger ID = new AtomicInteger();
     private final int id = ID.getAndIncrement();
     private final List<Element> clips = new ArrayList<>();
-    private final List<MovableSvg> svgs = new ArrayList<>();
+    private final List<MovableNode> svgs = new ArrayList<>();
     private boolean autoSize = false;
 
     /**
@@ -95,11 +95,11 @@ public final class Canvas extends Svg {
     /**
      * Add an SVG.
      *
-     * @param svg SVG to add.
-     * @return The {@link MovableSvg} that wraps the added SVG.
+     * @param node SVG to add.
+     * @return The {@link MovableNode} that wraps the added SVG.
      */
-    public MovableSvg add(Svg svg) {
-        MovableSvg m = MovableSvg.create(svg);
+    public MovableNode add(Node node) {
+        MovableNode m = MovableNode.create(node);
         svgs.add(m);
         return m;
     }
@@ -107,20 +107,20 @@ public final class Canvas extends Svg {
     /**
      * Remove an SVG.
      *
-     * @param svg SVG to remove.
-     * @return The removed SVG (could be a {@link MovableSvg}).
+     * @param node SVG to remove.
+     * @return The removed SVG (could be a {@link MovableNode}).
      */
-    public Svg remove(Svg svg) {
-        if(svg instanceof MovableSvg ms) {
+    public Node remove(Node node) {
+        if(node instanceof MovableNode ms) {
             if(svgs.remove(ms)) {
                 return ms;
             }
-            svg = ms.embedded;
+            node = ms.embedded;
         }
-        for(MovableSvg ms: svgs) {
-            if(ms.embedded == svg) {
+        for(MovableNode ms: svgs) {
+            if(ms.embedded == node) {
                 svgs.remove(ms);
-                return svg;
+                return node;
             }
         }
         return null;
@@ -128,10 +128,10 @@ public final class Canvas extends Svg {
 
     @Override
     public void build() {
-        svgs.forEach(MovableSvg::build);
+        svgs.forEach(MovableNode::build);
         if(autoSize) {
             double w = 0.1, h = 0.1;
-            for (MovableSvg svg : svgs) {
+            for (MovableNode svg : svgs) {
                 w = Math.max(w, svg.width);
                 h = Math.max(h, svg.height);
             }
@@ -145,7 +145,7 @@ public final class Canvas extends Svg {
             s.append(clip.svg).append("\n");
         }
         s.append("</clipPath></defs>\n<g clip-path=\"url(#so-clip-").append(id).append(")\">\n");
-        for(MovableSvg svg: svgs) {
+        for(MovableNode svg: svgs) {
             s.append(svg.svg).append("\n");
         }
         s.append("</g>\n");

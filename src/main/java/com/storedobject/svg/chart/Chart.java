@@ -1,13 +1,13 @@
 package com.storedobject.svg.chart;
 
-import com.storedobject.svg.Svg;
+import com.storedobject.svg.Node;
 
 /**
  * Base class for all SVG charts.
  *
  * @author Syam
  */
-public abstract class Chart extends Svg {
+public abstract class Chart extends Node {
 
     /**
      * Data values of the chart.

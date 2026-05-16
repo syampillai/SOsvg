@@ -1,7 +1,7 @@
 package com.storedobject.svg.chart;
 
+import com.storedobject.svg.Node;
 import com.storedobject.svg.Styles;
-import com.storedobject.svg.Svg;
 
 import java.util.*;
 import java.util.function.Function;
@@ -49,7 +49,7 @@ public class Values {
      * @param unit Unit to be set.
      */
     public void setUnit(String unit) {
-        this.unit = unit == null ? "" : Svg.escapeXml(unit);
+        this.unit = unit == null ? "" : Node.escapeXml(unit);
         built = false;
     }
 
@@ -68,7 +68,7 @@ public class Values {
      * @param labelName Label name.
      */
     public void setLabelName(String labelName) {
-        this.labelName = labelName == null || labelName.isBlank() ? null : Svg.escapeXml(labelName);
+        this.labelName = labelName == null || labelName.isBlank() ? null : Node.escapeXml(labelName);
         built = false;
     }
 
@@ -87,7 +87,7 @@ public class Values {
      * @param valueNameColor Color to set.
      */
     public void setValueNameColor(String valueNameColor) {
-        this.valueNameColor = valueNameColor == null || valueNameColor.isBlank() ? null : Svg.escapeXml(valueNameColor);
+        this.valueNameColor = valueNameColor == null || valueNameColor.isBlank() ? null : Node.escapeXml(valueNameColor);
         built = false;
     }
 
@@ -106,7 +106,7 @@ public class Values {
      * @param labelNameColor Color to set.
      */
     public void setLabelNameColor(String labelNameColor) {
-        this.labelNameColor = labelNameColor == null || labelNameColor.isBlank() ? null : Svg.escapeXml(labelNameColor);
+        this.labelNameColor = labelNameColor == null || labelNameColor.isBlank() ? null : Node.escapeXml(labelNameColor);
         built = false;
     }
 
@@ -125,7 +125,7 @@ public class Values {
      * @param valueName Value name.
      */
     public void setValueName(String valueName) {
-        this.valueName = valueName == null || valueName.isBlank() ? null : Svg.escapeXml(valueName);
+        this.valueName = valueName == null || valueName.isBlank() ? null : Node.escapeXml(valueName);
         built = false;
     }
 
@@ -145,7 +145,7 @@ public class Values {
      * @return Formatted value string.
      */
     public String getValue(Value value) {
-        return Svg.escapeXml(valueFunction.apply(value));
+        return Node.escapeXml(valueFunction.apply(value));
     }
 
     /**
@@ -155,7 +155,7 @@ public class Values {
      * @return Formatted label string.
      */
     public String getLabel(Value value) {
-        return Svg.escapeXml(labelFunction.apply(value));
+        return Node.escapeXml(labelFunction.apply(value));
     }
 
     /**
@@ -369,7 +369,7 @@ public class Values {
      * @return Formatted string.
      */
     public static String toString(double v) {
-        return Svg.toString(v, 2);
+        return Node.toString(v, 2);
     }
 
     /**
@@ -392,7 +392,7 @@ public class Values {
      * @return Formatted string.
      */
     public static String toString(double v, int decimals, String unit) {
-        String s = Svg.toString(v, decimals);
+        String s = Node.toString(v, decimals);
         if(unit != null) {
             s += unit;
         }
@@ -459,13 +459,13 @@ public class Values {
      * Only values that are instances of {@code StyledValue} are processed, and their
      * individual styles are appended to the result.
      *
-     * @param svg The SVG where the styles are being used.
+     * @param node The SVG where the styles are being used.
      * @return A concatenated string of styles for all {@code StyledValue} objects in the collection.
      */
-    public String buildStyles(Svg svg) {
+    public String buildStyles(Node node) {
         StringBuilder sb = new StringBuilder();
         values.stream().filter(v -> v instanceof StyledValue).forEach(v -> ((StyledValue) v)
-                .buildStyles(sb, svg));
+                .buildStyles(sb, node));
         return sb.toString();
     }
 
@@ -492,7 +492,7 @@ public class Values {
             this.label = label;
             this.value = value;
             this.color = color;
-            this.id = Svg.IDValue();
+            this.id = Node.IDValue();
         }
 
         /**
@@ -544,11 +544,11 @@ public class Values {
         /**
          * Gets the SVG element identifier for this value.
          *
-         * @param svg the SVG where this value is being used
+         * @param node the SVG where this value is being used
          * @return the SVG element ID
          */
-        public final String id(Svg svg) {
-            return Svg.ID(id) + "-" + svg.getId();
+        public final String id(Node node) {
+            return Node.ID(id) + "-" + node.getId();
         }
 
         @Override
@@ -621,10 +621,10 @@ public class Values {
          * Build the styles.
          *
          * @param sb String builder to build into.
-         * @param svg SVG where this value is being used.
+         * @param node SVG where this value is being used.
          */
-        void buildStyles(StringBuilder sb, Svg svg) {
-            styles.build(sb, id(svg));
+        void buildStyles(StringBuilder sb, Node node) {
+            styles.build(sb, id(node));
         }
     }
 }

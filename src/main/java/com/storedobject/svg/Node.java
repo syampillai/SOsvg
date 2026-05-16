@@ -7,12 +7,12 @@ import java.util.function.DoubleSupplier;
 
 /**
  * Base class for all SVG objects. This represents a single visual unit or part of an SVG document. It has got its own
- * size and origin, and can be independently translated and scaled. Many such SVG objects can be combined to form
+ * size and origin, and can be independently translated and scaled. Many such node objects can be combined to form
  * a larger visual composition.
  *
  * @author Syam
  */
-public abstract class Svg {
+public abstract class Node {
 
     private static final NumberFormat format = NumberFormat.getNumberInstance();
     static {
@@ -27,39 +27,36 @@ public abstract class Svg {
     protected final long id = IDValue();
 
     /**
-     * Default constructor for the {@code Svg} class.
-     * Initializes a new instance of the SVG object with default properties.
+     * Default constructor for the {@code Node} class.
+     * Initializes a new instance of the node object with default properties.
      */
-    public Svg() {
+    public Node() {
     }
 
     /**
-     * SVG content. This is typically set by the build() method. It should not contain the top level svg tag.
-     * <p>Note: It can contain one or more svg tags clubbed together to form a logical unit or visual part. If the
-     * such a unit should be treated as a single entity for positioning and scaling purposes, it may have to be
-     * bracketed by a "<code>g</code>" tag.</p>
+     * SVG content of the node. This is typically set by the build() method. It should not contain the top level svg tag.
+     * <p>Note: It can contain one or more svg tags clubbed together to form a logical unit or visual part.</p>
      */
     protected String svg;
 
     /**
-     * Current x and y coordinates of this svg unit. These could be set to any value so that the final SVG output
+     * Current x and y coordinates of this node. These could be set to any value so that the final SVG output
      * will be translated to this location.
      */
     protected double x = 0, y = 0;
 
     /**
-     * Default size of the SVG. This could be set to any value so that the final SVG output will compute the view box
-     * using these values and the values of x and y.
+     * The width and height of the node content.
      */
     protected double width = 600, height = 400;
 
     /**
-     * Build the SVG. This method is called before getting the SVG output.
+     * Build the content. This method is called internally to get before obtaining the output.
      */
     public abstract void build();
 
     /**
-     * Check if the chart is built.
+     * Check if the content is built.
      *
      * @return True if built.
      */
@@ -67,71 +64,12 @@ public abstract class Svg {
     public abstract boolean isBuilt();
 
     /**
-     * Retrieves the unique identifier of the SVG object.
+     * Retrieves the unique identifier of the node.
      *
      * @return The unique identifier as a long value.
      */
     public final long getId() {
         return id;
-    }
-
-    private String svg(String width, String height) {
-        if(!isBuilt()) {
-            build();
-        }
-        double w = this.width + x, h = this.height + y;
-        String s;
-        if(w <= 0 || h <= 0) { // Out of bounds
-            h = y = 0.1;
-            s = "<g></g>";
-        } else {
-            s = svg;
-            if(x != 0 || y != 0) {
-                s = "<g transform=\"translate(" + toString(x, 2) + ", " + toString(y, 2)
-                        + ")\">\n" + s + "\n</g>";
-            }
-        }
-        if(width == null) {
-            width = toString(w, 2);
-        }
-        if(height == null) {
-            height = toString(h, 2);
-        }
-        return "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 "
-                + toString(w, 2) + " " + toString(h, 2)
-                + "\" width=\"" + width + "\" height=\"" + height + "\">\n" + s + "\n</svg>";
-    }
-
-    /**
-     * Get the SVG output using its default dimensions.
-     *
-     * @return SVG string.
-     */
-    public final String getSvg() {
-        return svg(null, null);
-    }
-
-    /**
-     * Get the SVG output that fills its container (100% width and height).
-     *
-     * @return SVG string.
-     */
-    public final String getFilledSvg() {
-        return getScaledSvg(100, 100);
-    }
-
-    /**
-     * Get the SVG output with specified scale percentages for width and height.
-     *
-     * @param scaleWidthPercentage Scale percentage for width (0 to 100).
-     * @param scaleHeightPercentage Scale percentage for height (0 to 100).
-     * @return SVG string.
-     */
-    public final String getScaledSvg(double scaleWidthPercentage, double scaleHeightPercentage) {
-        return svg(scaleWidthPercentage <= 0 || scaleWidthPercentage > 100 ? "auto"
-                        : toString(scaleWidthPercentage, 4) + "%",
-                scaleHeightPercentage <= 0 || scaleHeightPercentage > 100 ? "auto"
-                        : toString(scaleHeightPercentage, 4) + "%");
     }
 
     /**
@@ -215,25 +153,25 @@ public abstract class Svg {
     }
 
     /**
-     * Returns the width of the SVG. This is the same as the view box width if x and y are 0.
+     * Returns the width of the content. This is the same as the view box width if x and y are 0.
      *
-     * @return The width of the SVG.
+     * @return The width of the content.
      */
     public final double getWidth() {
         return width;
     }
 
     /**
-     * Returns the height of the SVG. This is the same as the view box height if x and y are 0.
+     * Returns the height of the content. This is the same as the view box height if x and y are 0.
      *
-     * @return The height of the SVG.
+     * @return The height of the content.
      */
     public final double getHeight() {
         return height;
     }
 
     /**
-     * Returns the X coordinate.
+     * Returns the X coordinate of the content.
      *
      * @return The X coordinate.
      */
@@ -242,7 +180,7 @@ public abstract class Svg {
     }
 
     /**
-     * Returns the Y coordinate.
+     * Returns the Y coordinate of the content.
      *
      * @return The Y coordinate.
      */
@@ -251,12 +189,12 @@ public abstract class Svg {
     }
 
     /**
-     * Add a margin to this SVG.
+     * Add a margin to this content.
      *
-     * @param margin Margin value.
-     * @return A new {@link Svg} with the margin added.
+     * @param margin Margin value to be added to each side.
+     * @return A new {@link Node} with the margin added.
      */
-    public Svg margin(double margin) {
+    public Node margin(double margin) {
         return margin(margin, null);
     }
 
@@ -265,130 +203,140 @@ public abstract class Svg {
      *
      * @param margin Margin value.
      * @param side Side on which to add the margin.
-     * @return A new {@link Svg} with the margin added.
+     * @return A new {@link Node} with the margin added.
      */
-    public Svg margin(double margin, Side side) {
+    public Node margin(double margin, Side side) {
         if(margin <= 0) {
             return this;
         }
-        return new TransformedSvg(this, new Margin(margin, side));
+        return new TransformedNode(this, new Margin(margin, side));
     }
 
     /**
-     * Add another SVG to this one at a specified side.
+     * Add another node to this one at a specified side.
      *
-     * @param svg SVG to add.
-     * @param side Side where the SVG should be added.
-     * @return A new {@link Svg} containing both.
+     * @param node Node to add.
+     * @param side Side where the node should be added.
+     * @return A new {@link Node} containing both.
      */
-    public Svg add(Svg svg, Side side) {
-        if(svg == null) {
+    public Node add(Node node, Side side) {
+        if(node == null) {
             return this;
         }
         DoubleSupplier computeX = null, computeY = null;
         if(side != null) {
             switch (side) {
-                case Left -> computeX = () -> this.x - svg.width;
+                case Left -> computeX = () -> this.x - node.width;
                 case Right -> computeX = () -> this.x + this.width;
-                case Top -> computeY = () -> this.y - svg.height;
+                case Top -> computeY = () -> this.y - node.height;
                 case Bottom -> computeY = () -> this.y + this.height;
             }
         }
-        return new TransformedSvg(svg, new Anchor(this, computeX, computeY));
+        return new TransformedNode(node, new Anchor(this, computeX, computeY));
     }
 
     /**
-     * Add another SVG at a specific point.
+     * Add another node at a specific point.
      *
-     * @param svg SVG to add.
-     * @param at Point where the SVG should be added.
-     * @return A new {@link Svg} containing both.
+     * @param node Node to add.
+     * @param at Point where the node should be added.
+     * @return A new {@link Node} containing both.
      */
-    public Svg add(Svg svg, Point at) {
-        return add(svg, at.x(), at.y());
+    public Node add(Node node, Point at) {
+        return add(node, at.x(), at.y());
     }
 
     /**
-     * Add another SVG at a specific displacement.
+     * Add another node at a specific displacement.
      *
-     * @param svg SVG to add.
+     * @param node Node to add.
      * @param dx X displacement.
      * @param dy Y displacement.
-     * @return A new {@link Svg} containing both.
+     * @return A new {@link Node} containing both.
      */
-    public Svg add(Svg svg, double dx, double dy) {
-        return new TransformedSvg(svg,
-                new Anchor(this, () -> this.x + svg.x + dx, () -> this.y + svg.y + dy));
+    public Node add(Node node, double dx, double dy) {
+        return new TransformedNode(node,
+                new Anchor(this, () -> this.x + node.x + dx, () -> this.y + node.y + dy));
     }
 
     /**
-     * Scale this SVG to a new width.
+     * Scale this node content to a new width.
      *
      * @param newWidth New width.
-     * @return A new {@link Svg} scaled to the new width.
+     * @return A new {@link Node} scaled to the new width.
      */
-    public Svg scaleToWidth(double newWidth) {
-        return new TransformedSvg(this, new ScaleTo(this, newWidth, -1));
+    public Node scaleToWidth(double newWidth) {
+        return new TransformedNode(this, new ScaleTo(this, newWidth, -1));
     }
 
     /**
-     * Scale this SVG to a new height.
+     * Scale this node content to a new height.
      *
      * @param newHeight New height.
-     * @return A new {@link Svg} scaled to the new height.
+     * @return A new {@link Node} scaled to the new height.
      */
-    public Svg scaleToHeight(double newHeight) {
-        return new TransformedSvg(this, new ScaleTo(this, -1, newHeight));
+    public Node scaleToHeight(double newHeight) {
+        return new TransformedNode(this, new ScaleTo(this, -1, newHeight));
     }
 
     /**
-     * Scale this SVG to new dimensions.
+     * Scale this node content to new dimensions.
      *
      * @param newWidth New width.
      * @param newHeight New height.
-     * @return A new {@link Svg} scaled to the new dimensions.
+     * @return A new {@link Node} scaled to the new dimensions.
      */
-    public Svg scaleTo(double newWidth, double newHeight) {
-        return new TransformedSvg(this, new ScaleTo(this, newWidth, newHeight));
+    public Node scaleTo(double newWidth, double newHeight) {
+        return new TransformedNode(this, new ScaleTo(this, newWidth, newHeight));
     }
 
     /**
-     * Scale this SVG by specified factors.
+     * Scale this node content by specified factors.
      *
      * @param scaleX X scale factor.
      * @param scaleY Y scale factor.
-     * @return A new {@link Svg} scaled.
+     * @return A new {@link Node} scaled.
      */
-    public Svg scale(double scaleX, double scaleY) {
-        return new TransformedSvg(this, new Scale(this, scaleX, scaleY));
+    public Node scale(double scaleX, double scaleY) {
+        return new TransformedNode(this, new Scale(this, scaleX, scaleY));
     }
 
     /**
-     * Scale this SVG by a specified factor.
+     * Scale this node content by a specified factor.
      *
      * @param scale Scale factor.
-     * @return A new {@link Svg} scaled.
+     * @return A new {@link Node} scaled.
      */
-    public Svg scale(double scale) {
-        return new TransformedSvg(this, new Scale(this, scale, scale));
+    public Node scale(double scale) {
+        return new TransformedNode(this, new Scale(this, scale, scale));
     }
 
     /**
-     * Flip this SVG horizontally.
+     * Flip this node content horizontally.
      *
-     * @return A new {@link Svg} flipped horizontally.
+     * @return A new {@link Node} flipped horizontally.
      */
-    public Svg flipHorizontally() {
-        return new TransformedSvg(this, new Scale(this, -1, 1));
+    public Node flipHorizontally() {
+        return new TransformedNode(this, new Scale(this, -1, 1));
     }
 
     /**
-     * Flip this SVG vertically.
+     * Flip this node content vertically.
      *
-     * @return A new {@link Svg} flipped vertically.
+     * @return A new {@link Node} flipped vertically.
      */
-    public Svg flipVertically() {
-        return new TransformedSvg(this, new Scale(this, 1, -1));
+    public Node flipVertically() {
+        return new TransformedNode(this, new Scale(this, 1, -1));
+    }
+
+    /**
+     * Creates a new {@link Document} instance associated with the current {@code Node}.
+     * This method initializes and returns a Document object for the node.
+     *
+     * @return A new {@link Document} instance associated with the current {@code Node}.
+     */
+    public final Document createDocument() {
+        return new Document(this);
     }
 
     /**
@@ -482,19 +430,19 @@ public abstract class Svg {
         @Override
         public final String transform(String svg) {
             if(side == null) {
-                String m = Svg.toString(margin, 2);
+                String m = Node.toString(margin, 2);
                 return "<g transform=\"translate(" + m + "," + m + ")\">\n" + svg + "\n</g>";
             }
             return switch (side) {
                 case Right, Bottom -> svg;
-                case Left -> "<g transform=\"translate(" + Svg.toString(margin, 2) + ",0)\">\n" + svg + "\n</g>";
-                case Top -> "<g transform=\"translate(0," + Svg.toString(margin, 2) + ")\">\n" + svg + "\n</g>";
+                case Left -> "<g transform=\"translate(" + Node.toString(margin, 2) + ",0)\">\n" + svg + "\n</g>";
+                case Top -> "<g transform=\"translate(0," + Node.toString(margin, 2) + ")\">\n" + svg + "\n</g>";
             };
         }
     }
 
     /**
-     * Transformer for moving an SVG.
+     * Transformer for moving a node.
      *
      * @author Syam
      */
@@ -542,7 +490,7 @@ public abstract class Svg {
         }
 
         /**
-         * Move to specified point.
+         * Move to a specified point.
          *
          * @param p Point.
          */
@@ -562,29 +510,29 @@ public abstract class Svg {
 
         @Override
         public final String transform(String svg) {
-            return "<g transform=\"translate(" + Svg.toString(x, 2) + ","
-                    + Svg.toString(y, 2) + ")\">\n" + svg + "\n</g>";
+            return "<g transform=\"translate(" + Node.toString(x, 2) + ","
+                    + Node.toString(y, 2) + ")\">\n" + svg + "\n</g>";
         }
     }
 
     /**
-     * Transformer for anchoring an SVG to another one.
+     * Transformer for anchoring a node to another one.
      *
      * @author Syam
      */
     public static class Anchor implements Transformer {
 
-        private final Svg anchoredTo;
+        private final Node anchoredTo;
         private final DoubleSupplier computeX, computeY;
 
         /**
          * Constructor.
          *
-         * @param anchoredTo SVG to anchor to.
+         * @param anchoredTo Node to anchor to.
          * @param computeX Supplier for X coordinate.
          * @param computeY Supplier for Y coordinate.
          */
-        public Anchor(Svg anchoredTo, DoubleSupplier computeX, DoubleSupplier computeY) {
+        public Anchor(Node anchoredTo, DoubleSupplier computeX, DoubleSupplier computeY) {
             this.anchoredTo = anchoredTo;
             this.computeX = computeX;
             this.computeY = computeY;
@@ -639,15 +587,15 @@ public abstract class Svg {
          * transformations and scaling operations.
          * It is initialized through the constructor of the containing class.
          */
-        protected final Svg svg;
+        protected final Node node;
 
         /**
          * Constructor.
          *
-         * @param svg SVG to scale.
+         * @param node SVG to scale.
          */
-        AbstractScale(Svg svg) {
-            this.svg = svg;
+        AbstractScale(Node node) {
+            this.node = node;
         }
 
         /**
@@ -656,7 +604,7 @@ public abstract class Svg {
          * @return X coordinate.
          */
         protected String x() {
-            return Svg.toString(this.svg.x, 2);
+            return Node.toString(this.node.x, 2);
         }
 
         /**
@@ -665,7 +613,7 @@ public abstract class Svg {
          * @return Y coordinate.
          */
         protected String y() {
-            return Svg.toString(this.svg.y, 2);
+            return Node.toString(this.node.y, 2);
         }
 
         /**
@@ -674,7 +622,7 @@ public abstract class Svg {
          * @return Negative X coordinate.
          */
         protected String xReverse() {
-            return Svg.toString(-this.svg.x, 2);
+            return Node.toString(-this.node.x, 2);
         }
 
         /**
@@ -683,7 +631,7 @@ public abstract class Svg {
          * @return Negative Y coordinate.
          */
         protected String yReverse() {
-            return Svg.toString(-this.svg.y, 2);
+            return Node.toString(-this.node.y, 2);
         }
     }
 
@@ -699,12 +647,12 @@ public abstract class Svg {
         /**
          * Constructor.
          *
-         * @param svg SVG to scale.
+         * @param node SVG to scale.
          * @param toWidth New width.
          * @param toHeight New height.
          */
-        public ScaleTo(Svg svg, double toWidth, double toHeight) {
-            super(svg);
+        public ScaleTo(Node node, double toWidth, double toHeight) {
+            super(node);
             this.toWidth = toWidth;
             this.toHeight = toHeight;
         }
@@ -717,8 +665,8 @@ public abstract class Svg {
             if(toWidth > 0) {
                 return toWidth;
             }
-            double scale = toHeight / svg.height;
-            return svg.width * scale;
+            double scale = toHeight / node.height;
+            return node.width * scale;
         }
 
         @Override
@@ -729,8 +677,8 @@ public abstract class Svg {
             if(toHeight > 0) {
                 return toHeight;
             }
-            double scale = toWidth / svg.width;
-            return svg.height * scale;
+            double scale = toWidth / node.width;
+            return node.height * scale;
         }
 
         @Override
@@ -738,8 +686,8 @@ public abstract class Svg {
             if(toWidth <= 0 && toHeight <= 0) {
                 return svg;
             }
-            String scaleX = Svg.toString(transformWidth(this.svg.width) / this.svg.width, 2);
-            String scaleY = Svg.toString(transformHeight(this.svg.height) / this.svg.height, 2);
+            String scaleX = Node.toString(transformWidth(this.node.width) / this.node.width, 2);
+            String scaleY = Node.toString(transformHeight(this.node.height) / this.node.height, 2);
             return "<g transform=\"translate(" + x() + "," + y() + ") \"scale(" + scaleX + "," + scaleY
                     + ") translate(" + xReverse() + "," + yReverse() + ")\">" + svg + "</g>";
         }
@@ -757,12 +705,12 @@ public abstract class Svg {
         /**
          * Constructor.
          *
-         * @param svg SVG to scale.
+         * @param node SVG to scale.
          * @param scaleX X scale factor.
          * @param scaleY Y scale factor.
          */
-        public Scale(Svg svg, double scaleX, double scaleY) {
-            super(svg);
+        public Scale(Node node, double scaleX, double scaleY) {
+            super(node);
             this.scaleX = scaleX;
             this.scaleY = scaleY;
         }
@@ -779,13 +727,13 @@ public abstract class Svg {
 
         @Override
         public String transform(String svg) {
-            if(this.svg.x == 0 && this.svg.y == 0) {
-                return "<g transform=\"scale(" + Svg.toString(this.scaleX, 2)
-                        + "," + Svg.toString(this.scaleY, 2)
+            if(this.node.x == 0 && this.node.y == 0) {
+                return "<g transform=\"scale(" + Node.toString(this.scaleX, 2)
+                        + "," + Node.toString(this.scaleY, 2)
                         + ")\">" + svg + "</g>";
             }
-            return "<g transform=\"translate(" + x() + "," + y() + ") scale(" + Svg.toString(this.scaleX, 2)
-                    + "," + Svg.toString(this.scaleY, 2)
+            return "<g transform=\"translate(" + x() + "," + y() + ") scale(" + Node.toString(this.scaleX, 2)
+                    + "," + Node.toString(this.scaleY, 2)
                     + ") translate(" + xReverse() + "," + yReverse() + ")\">" + svg + "</g>";
         }
     }

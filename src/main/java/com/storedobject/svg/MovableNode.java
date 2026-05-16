@@ -1,32 +1,32 @@
 package com.storedobject.svg;
 
 /**
- * A wrapper for {@link Svg} that allows it to be moved.
+ * A wrapper for {@link Node} that allows it to be moved.
  *
  * @author Syam
  */
-public final class MovableSvg extends TransformedSvg {
+public final class MovableNode extends TransformedNode {
 
     private final Mover mover = new Mover();
 
     /**
      * Constructor.
      *
-     * @param embedded SVG to be wrapped.
+     * @param embedded Node to be wrapped.
      */
-    private MovableSvg(Svg embedded) {
+    private MovableNode(Node embedded) {
         super(embedded);
         transform(new Mover());
     }
 
     /**
-     * Create a {@link MovableSvg} from an {@link Svg}.
+     * Create a {@link MovableNode} from an {@link Node}.
      *
-     * @param embedded SVG to be wrapped.
+     * @param embedded Node to be wrapped.
      * @return MovableSvg.
      */
-    public static MovableSvg create(Svg embedded) {
-        return embedded instanceof MovableSvg m ? m : new MovableSvg(embedded);
+    public static MovableNode create(Node embedded) {
+        return embedded instanceof MovableNode m ? m : new MovableNode(embedded);
     }
 
     /**
@@ -41,8 +41,8 @@ public final class MovableSvg extends TransformedSvg {
     /**
      * Move by displacement.
      *
-     * @param x X displacement.
-     * @param y Y displacement.
+     * @param x New x coordinate.
+     * @param y New y coordinate.
      */
     public void move(double x, double y) {
         mover.move(x, y);

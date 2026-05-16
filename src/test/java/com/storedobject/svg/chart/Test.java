@@ -1,7 +1,6 @@
 package com.storedobject.svg.chart;
 
 import com.storedobject.svg.Canvas;
-import com.storedobject.svg.Circle;
 import com.storedobject.svg.Star;
 
 public class Test {
@@ -14,7 +13,7 @@ public class Test {
         c.setLabelName("Days");
         c.setValueName("In mg/lit");
         canvas.add(c);
-        System.err.println(c.getSvg());
+        System.err.println(c.createDocument());
         c = new Bars();
         c.setUnit("%");
         c.setLabelName("Categories");
@@ -28,7 +27,7 @@ public class Test {
         c.addValue("Category G", 15);
         c.addValue("Category H", 100);
         canvas.add(c);
-        System.err.println(c.getSvg());
+        System.err.println(c.createDocument());
         c = new Pie();
         c.addValue("Category A", 15);
         c.addValue("Category B", 15);
@@ -37,11 +36,7 @@ public class Test {
         c.addValue("Category E", 30);
         canvas.add(c);
 
-        System.err.println(c.getSvg());
-        //System.err.println("--- CANVAS ---");
-        //System.err.println(canvas.getSvg());
-        Circle c1 = new Circle(100, 100, 50);
-        System.err.println(c1.getSvg());
-        System.err.println(c1.flipHorizontally().getSvg());
+        System.err.println(c.createDocument());
+        System.err.println(c.scale(-1).createDocument());
     }
 }

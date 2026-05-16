@@ -1,7 +1,7 @@
 package com.storedobject.svg;
 
 /**
- * Interface for transforming an SVG.
+ * Interface for transforming a node.
  *
  * @author Syam
  */
@@ -44,10 +44,10 @@ public interface Transformer {
     }
 
     /**
-     * Transform the SVG content.
+     * Transform the node content.
      *
-     * @param svg SVG content.
-     * @return Transformed SVG content.
+     * @param svg Node content.
+     * @return Transformed node content.
      */
     String transform(String svg);
 }

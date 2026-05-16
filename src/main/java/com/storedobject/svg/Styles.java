@@ -28,8 +28,13 @@ public class Styles extends HashMap<String, String> {
      */
     public void build(StringBuilder sb, String id) {
         sb.append("#").append(id).append(" {\n");
+        String key;
         for(Map.Entry<String, String> e: entrySet()) {
-            sb.append(Svg.escapeXml(e.getKey())).append(": ").append(Svg.escapeXml(e.getValue())).append(";\n");
+            key = e.getKey();
+            if("id".equals(key)) { // Skip the id property
+                continue;
+            }
+            sb.append(Node.escapeXml(key)).append(": ").append(Node.escapeXml(e.getValue())).append(";\n");
         }
         sb.append("}\n");
     }
